@@ -45,7 +45,7 @@ export default function FilterBar({ categories, counts, active, onChange }) {
               className={[
                 "rounded-full px-2 py-0.5 text-small font-semibold tabular-nums",
                 isActive
-                  ? "bg-white/20 text-white"
+                  ? "bg-accent-strong text-white"
                   : "bg-accent-soft text-accent",
               ].join(" ")}
             >

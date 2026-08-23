@@ -7,17 +7,18 @@
 @theme {
   --font-sans: "Manrope", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
 
-  /* Нейтральные с примесью акцентного тона — не «грязный» серый */
-  --color-bg: #f4f6fb;
+  /* Нейтральные с мятной примесью — не «грязный» серый */
+  --color-bg: #f1f7f4;
   --color-surface: #ffffff;
-  --color-ink: #141a2b;
-  --color-muted: #555d78;
-  --color-line: #e2e6f1;
+  --color-ink: #10201c;
+  --color-muted: #4f6360;
+  --color-line: #dde9e4;
 
-  /* Один акцент на всю страницу */
-  --color-accent: #3244d4;
-  --color-accent-strong: #2637b3;
-  --color-accent-soft: #eceffe;
+  /* Один акцент на всю страницу: глубокая мята для действий,
+     светлая — для подложек под иконки и метки */
+  --color-accent: #0e6f5c;
+  --color-accent-strong: #0a5849;
+  --color-accent-soft: #d8f0e7;
 
   /* Шкала размеров с шагом 1.25 от 16px */
   --text-small: 0.8rem;
@@ -30,12 +31,12 @@
   --radius-card: 1.25rem;
   --radius-control: 0.75rem;
 
-  /* Тени затемняют фон, а не кладут поверх серый туман */
+  /* Тени затемняют мятный фон, а не кладут поверх серый туман */
   --shadow-soft:
-    0 1px 2px rgba(20, 26, 43, 0.06), 0 12px 28px -16px rgba(20, 26, 43, 0.22);
+    0 1px 2px rgba(16, 32, 28, 0.06), 0 12px 28px -16px rgba(16, 32, 28, 0.22);
   --shadow-lift:
-    0 2px 4px rgba(20, 26, 43, 0.08), 0 18px 40px -18px rgba(20, 26, 43, 0.3);
-  --shadow-modal: 0 24px 70px -20px rgba(20, 26, 43, 0.45);
+    0 2px 4px rgba(16, 32, 28, 0.08), 0 18px 40px -18px rgba(16, 32, 28, 0.3);
+  --shadow-modal: 0 24px 70px -20px rgba(16, 32, 28, 0.45);
 
   --ease-out-soft: cubic-bezier(0.22, 0.68, 0.35, 1);
 }
@@ -47,6 +48,14 @@
 
   body {
     background-color: var(--color-bg);
+    /* Мягкая мятная подсветка сверху — страница перестаёт быть плоской заливкой */
+    background-image: radial-gradient(
+      120% 55% at 12% 0%,
+      #dff2ea 0%,
+      transparent 62%
+    );
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-size: var(--text-body);
