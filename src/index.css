@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+/* --------------------------------------------------------------------------
+   Единый набор значений: шрифт, цвета, размеры текста, радиусы, тени.
+   Вся вёрстка собрана только из них — своих чисел в разметке нет.
+   -------------------------------------------------------------------------- */
+@theme {
+  --font-sans: "Manrope", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+
+  /* Нейтральные с примесью акцентного тона — не «грязный» серый */
+  --color-bg: #f4f6fb;
+  --color-surface: #ffffff;
+  --color-ink: #141a2b;
+  --color-muted: #555d78;
+  --color-line: #e2e6f1;
+
+  /* Один акцент на всю страницу */
+  --color-accent: #3244d4;
+  --color-accent-strong: #2637b3;
+  --color-accent-soft: #eceffe;
+
+  /* Шкала размеров с шагом 1.25 от 16px */
+  --text-small: 0.8rem;
+  --text-body: 1rem;
+  --text-lead: 1.25rem;
+  --text-h3: 1.25rem;
+  --text-h2: 1.5625rem;
+  --text-h1: clamp(1.9375rem, 1.35rem + 2.9vw, 3.0518rem);
+
+  --radius-card: 1.25rem;
+  --radius-control: 0.75rem;
+
+  /* Тени затемняют фон, а не кладут поверх серый туман */
+  --shadow-soft:
+    0 1px 2px rgba(20, 26, 43, 0.06), 0 12px 28px -16px rgba(20, 26, 43, 0.22);
+  --shadow-lift:
+    0 2px 4px rgba(20, 26, 43, 0.08), 0 18px 40px -18px rgba(20, 26, 43, 0.3);
+  --shadow-modal: 0 24px 70px -20px rgba(20, 26, 43, 0.45);
+
+  --ease-out-soft: cubic-bezier(0.22, 0.68, 0.35, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Длинные русские слова не должны вылезать за экран */
+  h1,
+  h2,
+  h3 {
+    overflow-wrap: break-word;
+    text-wrap: balance;
+  }
+
+  h1 {
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+  }
+
+  h2 {
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  h3 {
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  /* Рамка фокуса видна при работе с клавиатуры и не мешает мыши */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@layer utilities {
+  .appear {
+    animation: appear 0.22s var(--ease-out-soft) both;
+  }
+
+  @keyframes appear {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* Кто-то отключает анимации из-за укачивания — уважаем настройку */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
