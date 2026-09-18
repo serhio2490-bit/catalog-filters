@@ -157,7 +157,7 @@ export default function ServiceModal({ service, categoryTitle, onClose }) {
             <section
               ref={termsRef}
               aria-label="Условия обработки персональных данных"
-              className="appear mt-4 rounded-card border border-line bg-surface p-5 text-small leading-relaxed text-muted sm:p-6"
+              className="appear mt-4 rounded-card border border-line bg-paper p-5 text-small leading-relaxed text-muted sm:p-6"
             >
               <h3 className="text-lead font-bold text-ink">
                 Условия обработки персональных данных
@@ -173,7 +173,7 @@ export default function ServiceModal({ service, categoryTitle, onClose }) {
                 Отдельного согласия на рассылку здесь нет — по закону это другое
                 согласие, и его нельзя брать той же галочкой.
               </p>
-              <p className="mt-3 rounded-control bg-paper p-3 text-ink">
+              <p className="mt-3 rounded-control bg-surface p-3 text-ink">
                 <strong className="font-semibold">Это демонстрация.</strong>{" "}
                 Текст показывает структуру, а не заменяет документ. На рабочем
                 сайте здесь стоит политика с реквизитами владельца, а заявка
