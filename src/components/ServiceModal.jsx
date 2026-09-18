@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
 import Icon from "./Icon";
 
-// Окно «Подробнее». Закрывается по Esc, по клику вне и кнопкой.
+// Окно «Что входит». Закрывается по Esc, по клику вне и кнопкой.
 // Пока окно открыто, Tab не убегает на страницу под ним, а фон не прокручивается.
+// Сверху — снимок услуги, под ним подробное описание и список работ.
 
 export default function ServiceModal({ service, categoryTitle, onClose }) {
   const dialogRef = useRef(null);
@@ -55,7 +56,7 @@ export default function ServiceModal({ service, categoryTitle, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-ink/55 p-0 backdrop-blur-sm sm:items-center sm:p-6"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-scrim/60 p-0 backdrop-blur-sm sm:items-center sm:p-6"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
@@ -65,67 +66,80 @@ export default function ServiceModal({ service, categoryTitle, onClose }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="service-modal-title"
-        className="appear max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-card bg-surface p-6 shadow-modal sm:rounded-card sm:p-8"
+        className="appear max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-card bg-surface shadow-modal sm:rounded-card"
       >
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-control bg-accent-soft text-accent">
-              <Icon name={service.category} className="h-6 w-6" />
-            </span>
-            <span className="text-small font-medium text-muted">
-              {categoryTitle}
-            </span>
-          </div>
+        {/* Снимок и заголовок поверх него — текст лежит на плотной вуали,
+            иначе по светлой части фотографии его не прочитать. */}
+        <div className="relative isolate">
+          <img
+            src={`${import.meta.env.BASE_URL}img/${service.image}`}
+            alt={service.alt}
+            className="h-44 w-full object-cover sm:h-56"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-t from-scrim/92 via-scrim/45 via-50% to-transparent to-85%"
+          />
 
           <button
             ref={closeButtonRef}
             type="button"
             onClick={onClose}
             aria-label="Закрыть"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-control border border-line text-muted transition duration-200 ease-out hover:border-accent hover:text-accent"
+            className="absolute top-4 right-4 flex h-11 w-11 items-center justify-center rounded-control border border-white/30 bg-scrim/40 text-white backdrop-blur-sm transition-colors duration-200 ease-soft hover:border-white hover:bg-scrim/70"
           >
             <Icon name="close" className="h-5 w-5" />
           </button>
+
+          <div className="absolute inset-x-0 bottom-0 p-6">
+            <span className="text-small font-semibold tracking-[0.05em] text-accent-soft">
+              {categoryTitle}
+            </span>
+            <h2
+              id="service-modal-title"
+              className="mt-2 text-h2 font-semibold text-white"
+            >
+              {service.title}
+            </h2>
+          </div>
         </div>
 
-        <h2 id="service-modal-title" className="mt-5 text-h2 font-extrabold">
-          {service.title}
-        </h2>
+        <div className="p-6 sm:p-8">
+          <p className="max-w-[58ch] text-lead leading-relaxed text-muted">
+            {service.full}
+          </p>
 
-        <p className="mt-3 max-w-[58ch] text-lead leading-relaxed text-muted">
-          {service.full}
-        </p>
+          <h3 className="mt-8 text-h3 font-bold">Что входит в цену</h3>
+          <ul className="mt-4 space-y-3">
+            {service.includes.map((item) => (
+              <li key={item} className="flex items-start gap-3">
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
+                  <Icon name="check" className="h-3.5 w-3.5" />
+                </span>
+                <span className="text-muted">{item}</span>
+              </li>
+            ))}
+          </ul>
 
-        <h3 className="mt-7 text-h3 font-bold">Что входит</h3>
-        <ul className="mt-3 space-y-2.5">
-          {service.includes.map((item) => (
-            <li key={item} className="flex items-start gap-3">
-              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
-                <Icon name="check" className="h-3.5 w-3.5" />
-              </span>
-              <span className="text-muted">{item}</span>
-            </li>
-          ))}
-        </ul>
-
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6">
-          <div>
-            <div className="text-h2 font-extrabold tabular-nums">
-              {service.price}
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6">
+            <div>
+              <div className="font-display text-h2 font-semibold tracking-[-0.02em] tabular-nums">
+                {service.price}
+              </div>
+              <div className="mt-1 flex items-center gap-1.5 text-small text-muted">
+                <Icon name="clock" className="h-4 w-4" />
+                <span>Обычно занимает {service.duration}</span>
+              </div>
             </div>
-            <div className="mt-1 flex items-center gap-1.5 text-small text-muted">
-              <Icon name="clock" className="h-4 w-4" />
-              <span>Обычно занимает {service.duration}</span>
-            </div>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="inline-flex min-h-11 items-center rounded-control bg-accent px-6 py-3 font-semibold text-on-accent transition-colors duration-200 ease-soft hover:bg-accent-deep"
+            >
+              Понятно
+            </button>
           </div>
-
-          <button
-            type="button"
-            onClick={onClose}
-            className="inline-flex min-h-11 items-center rounded-control bg-accent px-6 py-3 font-semibold text-white shadow-lift transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-accent-strong active:translate-y-0"
-          >
-            Понятно
-          </button>
         </div>
       </div>
     </div>

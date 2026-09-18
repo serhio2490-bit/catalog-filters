@@ -1,61 +1,64 @@
 @import "tailwindcss";
 
 /* --------------------------------------------------------------------------
-   Единый набор значений: шрифт, цвета, размеры текста, радиусы, тени.
-   Вся вёрстка собрана только из них — своих чисел в разметке нет.
+   Единый набор значений: шрифты, цвета, размеры текста, радиусы, тени.
+   Вся вёрстка собрана только из них — своих чисел и цветов в разметке нет.
    -------------------------------------------------------------------------- */
 @theme {
-  --font-sans: "Manrope", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  /* Пара шрифтов: заголовочный и текстовый — разные, это принципиально.
+     Страница в один шрифт читается как шаблон. */
+  --font-display: "Literata", ui-serif, Georgia, serif;
+  --font-sans: "Onest", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
 
-  /* Нейтральные с мятной примесью — не «грязный» серый */
-  --color-bg: #f1f7f4;
-  --color-surface: #ffffff;
-  --color-ink: #10201c;
-  --color-muted: #4f6360;
-  --color-line: #dde9e4;
+  /* Бумага тёплая нейтральная, поверхность подкрашена — чистого #ffffff нет */
+  --color-paper: #f2f0ec;
+  --color-surface: #fdfcfa;
+  --color-surface-2: #e9e6e0;
+  --color-ink: #16211d;
+  --color-muted: #4a5751;
+  --color-line: #ddd8d0;
 
-  /* Один акцент на всю страницу: глубокая мята для действий,
-     светлая — для подложек под иконки и метки */
-  --color-accent: #0e6f5c;
-  --color-accent-strong: #0a5849;
-  --color-accent-soft: #d8f0e7;
+  /* Фирменная мята — основной акцент. Тёплая охра работает ровно в одном
+     месте (метка «чаще всего»), иначе второй цвет размывается. */
+  --color-accent: #0d6b57;
+  --color-accent-deep: #09503f;
+  --color-accent-soft: #dcefe7;
+  --color-amber: #a8620f;
+  --color-on-accent: #ffffff;
+  --color-scrim: #081a15;
 
-  /* Шкала размеров с шагом 1.25 от 16px */
+  /* Шкала размеров */
   --text-small: 0.8rem;
   --text-body: 1rem;
-  --text-lead: 1.25rem;
-  --text-h3: 1.25rem;
-  --text-h2: 1.5625rem;
-  --text-h1: clamp(1.9375rem, 1.35rem + 2.9vw, 3.0518rem);
+  --text-lead: 1.125rem;
+  --text-h3: 1.375rem;
+  --text-h2: 1.75rem;
+  --text-h1: clamp(2rem, 1.3rem + 3.2vw, 3.4rem);
 
-  --radius-card: 1.25rem;
-  --radius-control: 0.75rem;
+  --radius-card: 1.15rem;
+  --radius-control: 0.7rem;
 
-  /* Тени затемняют мятный фон, а не кладут поверх серый туман */
-  --shadow-soft:
-    0 1px 2px rgba(16, 32, 28, 0.06), 0 12px 28px -16px rgba(16, 32, 28, 0.22);
-  --shadow-lift:
-    0 2px 4px rgba(16, 32, 28, 0.08), 0 18px 40px -18px rgba(16, 32, 28, 0.3);
-  --shadow-modal: 0 24px 70px -20px rgba(16, 32, 28, 0.45);
+  --shadow-card:
+    0 1px 2px rgba(22, 33, 29, 0.05), 0 14px 32px -20px rgba(22, 33, 29, 0.28);
+  --shadow-modal: 0 28px 80px -24px rgba(8, 26, 21, 0.5);
 
-  --ease-out-soft: cubic-bezier(0.22, 0.68, 0.35, 1);
+  --ease-soft: cubic-bezier(0.22, 0.68, 0.35, 1);
 }
 
 @layer base {
+  /* Страховка от горизонтальной прокрутки. Именно clip, а не hidden:
+     hidden превращает body в контейнер прокрутки и ломает липкие элементы. */
+  html,
+  body {
+    overflow-x: clip;
+  }
+
   html {
     scroll-behavior: smooth;
   }
 
   body {
-    background-color: var(--color-bg);
-    /* Мягкая мятная подсветка сверху — страница перестаёт быть плоской заливкой */
-    background-image: radial-gradient(
-      120% 55% at 12% 0%,
-      #dff2ea 0%,
-      transparent 62%
-    );
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-color: var(--color-paper);
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-size: var(--text-body);
@@ -63,30 +66,95 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Длинные русские слова не должны вылезать за экран */
+  /* Самый нижний слой — снимок светлой комнаты под осветляющей вуалью.
+     Комната должна читаться как фактура, а не спорить с текстом, поэтому
+     вуаль плотнее книзу: вверху видно больше, внизу под карточками — меньше.
+     Адрес картинки задаётся в разметке: у сборки относительный base,
+     и абсолютный путь сломался бы на GitHub Pages. */
+  .bg-room {
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    pointer-events: none;
+    background-image:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-paper) 62%, transparent) 0%,
+        color-mix(in srgb, var(--color-paper) 84%, transparent) 52%,
+        color-mix(in srgb, var(--color-paper) 95%, transparent) 100%
+      ),
+      var(--bg-room, none);
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+  }
+
+  /* Два больших размытых пятна фирменного цвета: страница перестаёт быть
+     плоской заливкой. Слой закреплён и нарисован кодом — 0 КБ. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        50rem 32rem at 6% -6%,
+        color-mix(in srgb, var(--color-accent) 22%, transparent),
+        transparent 60%
+      ),
+      radial-gradient(
+        40rem 28rem at 104% 14%,
+        color-mix(in srgb, var(--color-amber) 14%, transparent),
+        transparent 62%
+      );
+  }
+
+  /* Плёночное зерно поверх фона — тоже код, ни одного килобайта картинок.
+     Даёт «тактильность», которой не бывает у ровной заливки. */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.42;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+  }
+
   h1,
   h2,
   h3 {
-    overflow-wrap: break-word;
+    font-family: var(--font-display);
+    font-style: normal;
+    /* Длинные русские слова не должны вылезать за экран */
+    overflow-wrap: anywhere;
     text-wrap: balance;
   }
 
   h1 {
-    letter-spacing: -0.025em;
-    line-height: 1.08;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
   }
 
   h2 {
     letter-spacing: -0.02em;
-    line-height: 1.2;
+    line-height: 1.12;
   }
 
   h3 {
-    letter-spacing: -0.01em;
-    line-height: 1.3;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
   }
 
-  /* Рамка фокуса видна при работе с клавиатуры и не мешает мыши */
+  img {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* Рамка фокуса появляется мгновенно — анимировать её нельзя,
+     иначе в начале перехода у клавиатуры нет указателя. */
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 3px;
@@ -95,19 +163,55 @@
 }
 
 @layer utilities {
+  /* Появление карточек, которых в списке раньше не было.
+     Уходящие и остающиеся карточки анимируются из JS (приём FLIP). */
   .appear {
-    animation: appear 0.22s var(--ease-out-soft) both;
+    animation: appear 0.34s var(--ease-soft) both;
   }
 
   @keyframes appear {
     from {
       opacity: 0;
-      transform: translateY(8px);
+      transform: translateY(14px) scale(0.985);
     }
     to {
       opacity: 1;
       transform: none;
     }
+  }
+
+  /* Одно оркестрованное появление при первой загрузке — заголовок
+     проявляется словами. Дальше страница просто есть и не дёргается. */
+  .reveal-word {
+    display: inline-block;
+    animation: reveal 0.6s var(--ease-soft) both;
+    animation-delay: calc(var(--i) * 70ms);
+  }
+
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translateY(0.5em);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Область нажатия дотянута до 44px, размер самой подписи не меняется —
+     иначе на телефоне в мелкую ссылку трудно попасть пальцем. */
+  .tap-44 {
+    position: relative;
+  }
+
+  .tap-44::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 2.75rem;
   }
 }
 

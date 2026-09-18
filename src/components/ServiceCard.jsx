@@ -1,38 +1,63 @@
-import Icon from "./Icon";
+import { forwardRef } from "react";
 
-export default function ServiceCard({ service, categoryTitle, onOpen }) {
+// Карточку ведёт снимок: его пропорция задаёт высоту, а не наоборот.
+// Из-за разных пропорций ряды получаются неровными — сетка перестаёт
+// выглядеть таблицей. При наведении работает ровно один сигнал:
+// снимок чуть приближается, рамка темнеет.
+
+const ServiceCard = forwardRef(function ServiceCard(
+  { service, categoryTitle, onOpen, isNew, index },
+  ref,
+) {
   return (
-    <article className="appear flex h-full flex-col rounded-card border border-line bg-surface p-6 shadow-soft transition duration-200 ease-out hover:-translate-y-1 hover:shadow-lift">
-      <div className="flex items-start justify-between gap-4">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-control bg-accent-soft text-accent">
-          <Icon name={service.category} className="h-6 w-6" />
-        </span>
-        <span className="rounded-full bg-bg px-3 py-1 text-small font-medium text-muted">
+    <article
+      ref={ref}
+      className={`group flex flex-col overflow-hidden rounded-card border border-line bg-surface transition-[border-color,box-shadow] duration-200 ease-soft hover:border-muted/40 hover:shadow-card ${
+        isNew ? "appear" : ""
+      }`}
+      style={
+        isNew ? { animationDelay: `${Math.min(index, 8) * 35}ms` } : undefined
+      }
+    >
+      <img
+        src={`${import.meta.env.BASE_URL}img/${service.image}`}
+        alt={service.alt}
+        loading={index < 3 ? "eager" : "lazy"}
+        decoding="async"
+        style={{ aspectRatio: service.ratio }}
+        className="w-full object-cover transition-transform duration-500 ease-soft group-hover:scale-[1.04]"
+      />
+
+      <div className="flex flex-1 flex-col p-5">
+        <span className="text-small font-semibold tracking-[0.03em] text-accent">
           {categoryTitle}
         </span>
-      </div>
 
-      <h3 className="mt-5 text-h3 font-bold">{service.title}</h3>
+        <h3 className="mt-2 text-lead font-bold">{service.title}</h3>
 
-      <p className="mt-2 max-w-[52ch] text-muted">{service.short}</p>
+        <p className="mt-2 max-w-[46ch] text-small leading-relaxed text-muted">
+          {service.short}
+        </p>
 
-      <div className="mt-4 flex items-center gap-1.5 text-small text-muted">
-        <Icon name="clock" className="h-4 w-4" />
-        <span>{service.duration}</span>
-      </div>
+        <div className="mt-auto flex items-baseline justify-between gap-3 pt-4">
+          <span className="font-display text-lead font-semibold tracking-[-0.02em] tabular-nums">
+            {service.price}
+          </span>
+          <span className="text-small text-muted">{service.duration}</span>
+        </div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5">
-        <span className="text-h3 font-extrabold tabular-nums">
-          {service.price}
-        </span>
-        <button
-          type="button"
-          onClick={() => onOpen(service)}
-          className="inline-flex min-h-11 items-center rounded-control border border-line bg-surface px-4 py-2.5 font-medium text-accent transition duration-200 ease-out hover:-translate-y-0.5 hover:border-accent hover:bg-accent hover:text-white active:translate-y-0"
-        >
-          Подробнее
-        </button>
+        <div className="pt-2">
+          <button
+            type="button"
+            onClick={() => onOpen(service)}
+            className="tap-44 border-b-[1.5px] border-transparent py-2 text-small font-semibold text-accent transition-colors duration-200 ease-soft hover:border-current"
+          >
+            Что входит
+          </button>
+        </div>
       </div>
     </article>
   );
-}
+});
+
+export default ServiceCard;
