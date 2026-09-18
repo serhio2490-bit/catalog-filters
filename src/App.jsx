@@ -12,6 +12,15 @@ import ServiceCard from "./components/ServiceCard";
 import ServiceModal from "./components/ServiceModal";
 
 const VALID_IDS = ["all", ...categories.map((category) => category.id)];
+
+// Адрес фонового снимка обязан быть абсолютным. Он едет в CSS-переменной,
+// а используется в правиле из собранного файла стилей — относительный путь
+// посчитался бы от папки assets/, а не от страницы, и дал бы 404 на боевом
+// сайте. Локально это не видно: там стили лежат в корне.
+const BG_ROOM_URL = new URL(
+  `${import.meta.env.BASE_URL}img/bg-room.webp`,
+  document.baseURI,
+).href;
 const REVEAL_LEAD = ["Бытовой", "сервис"];
 const REVEAL_TAIL = ["для", "дома", "и", "квартиры"];
 
@@ -141,9 +150,7 @@ export default function App() {
       <div
         aria-hidden="true"
         className="bg-room"
-        style={{
-          "--bg-room": `url(${import.meta.env.BASE_URL}img/bg-room.webp)`,
-        }}
+        style={{ "--bg-room": `url("${BG_ROOM_URL}")` }}
       />
       <main className="mx-auto w-full max-w-[78rem] px-5 py-16 sm:px-8 sm:py-20 lg:py-24">
         {/* Шапка асимметричная: текст занимает пять колонок из двенадцати,
